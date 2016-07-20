@@ -1,29 +1,18 @@
 ﻿using StackExchange.Redis;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 
 namespace PirateApi.Controllers
 {
     [RoutePrefix("api")]
     public class PirateController : ApiController
-    {
-        public PirateController()
-        {
-        }
-        
+    {       
         [HttpGet]
         [Route("pirates")]
         public string Get(string phrase)
         {
-            // Connection refers to a property that returns a ConnectionMultiplexer
-            // as shown in the previous example.
-            using (ConnectionMultiplexer connection = ConnectionMultiplexer.Connect("connectionString"))
+            using (var connection = ConnectionMultiplexer.Connect("connectionString"))
             {
-                IDatabase cache = connection.GetDatabase();
+                var cache = connection.GetDatabase();
                 char[] delimiterChars = { ' ', ',', '.', ':', '\t' };
                 var tokenized = phrase.Split(delimiterChars);
 
@@ -35,11 +24,6 @@ namespace PirateApi.Controllers
                     {
                         tokenized[i] = keyValue.ToString();
                     }
-
-                    //foreach (var tokenize in phrase.Split(delimiterChars))
-                    //{
-
-                    //}
                 }
 
                 return string.Join(" ", tokenized);
@@ -51,11 +35,9 @@ namespace PirateApi.Controllers
         // POST api/values
         public void Post(string originalValue, string pirateValue)
         {
-            // Connection refers to a property that returns a ConnectionMultiplexer
-            // as shown in the previous example.
-            using (ConnectionMultiplexer connection = ConnectionMultiplexer.Connect("connectionString"))
+            using (var connection = ConnectionMultiplexer.Connect("connectionString"))
             {
-                IDatabase cache = connection.GetDatabase();
+                var cache = connection.GetDatabase();
 
                 cache.StringSet(originalValue, pirateValue);
             }
@@ -66,12 +48,9 @@ namespace PirateApi.Controllers
         [Route("pirates")]
         public void Put(string originalValue, string updatedValue)
         {
-            // Connection refers to a property that returns a ConnectionMultiplexer
-            // as shown in the previous example.
-
-            using (ConnectionMultiplexer connection = ConnectionMultiplexer.Connect("connectionString"))
+            using (var connection = ConnectionMultiplexer.Connect("connectionString"))
             {
-                IDatabase cache = connection.GetDatabase();
+                var cache = connection.GetDatabase();
 
                 cache.StringSet(originalValue, updatedValue);
             }
@@ -85,9 +64,9 @@ namespace PirateApi.Controllers
             // Connection refers to a property that returns a ConnectionMultiplexer
             // as shown in the previous example.
 
-            using (ConnectionMultiplexer connection = ConnectionMultiplexer.Connect("connectionString"))
+            using (var connection = ConnectionMultiplexer.Connect("connectionString"))
             {
-                IDatabase cache = connection.GetDatabase();
+                var cache = connection.GetDatabase();
 
                 cache.KeyDelete(originalValue);
             }
